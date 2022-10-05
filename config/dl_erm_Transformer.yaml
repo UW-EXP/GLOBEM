@@ -1,0 +1,40 @@
+name: "dl_erm_Transformer"
+
+feature_definition:
+  use_norm_features: True
+
+data_loader:
+  batch_size: 512
+  # Define how each data batch is sampled from multiple datasets and/or people
+  # option: "across_dataset", "within_dataset", "across_person", "within_person"
+  generate_by: "across_dataset" 
+  
+  mixup: null # option to mixup data: null, "across" (person or dataset), "within" (person or dataset)
+  mixup_alpha: null # the strongness of mixup. from 0 to 1
+
+model_params:
+  arch: "Transformer" # model architecture
+  # input dimension
+  # 2: a multi-channel time series data (for models like 1dCNN)
+  # 3: a single-channel image data (for models like 2dCNN)
+  input_dim: 2
+  head_size: 4 # size of each head in the MultiHeadAttention layer
+  num_heads: 4 # number of head in the MultiHeadAttention layer
+  ff_dim: 16 # hidden layer size of the fully connected forward layer
+  num_transformer_blocks: 2 # number of transformer blocks
+  transfromer_dropout: 0.25 # dropout rate within a transformer block
+  mlp_units: [32] # size of fully connected layers after the transformer blocks
+  mlp_dropout: 0.25 # dropout rate of between filly connected layers
+  embedding_size: 8 # vector length of the feature embedding network output
+  flag_y_vector: True # True: one hot vector on y for regular training
+
+training_params:
+  optimizer: "Adam" # option: SGD or Adam
+  learning_rate: 0.001
+  epochs: 200
+  steps_per_epoch: 100 # number of batches per epoch
+  cos_annealing_step: 100
+  cos_annealing_decay: 0.95
+  best_epoch_strategy: "direct" # option: direct or on_test
+  verbose: 0
+  skip_training: False

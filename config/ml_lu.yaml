@@ -1,0 +1,43 @@
+name: "ml_lu"
+
+feature_definition:
+  use_norm_features: False # whether to use normalized features
+  empty_feature_filtering_th: 0.9 # remove features based on a threshold
+  include_device_type: True # whether to include device type in the feature matrix
+  # Feature used in the paper (a subset that is compatible within the dataset)
+  feature_list: [
+            "f_loc:phone_locations_doryab_loglocationvariance:14dhist",
+            "f_loc:phone_locations_doryab_movingtostaticratio:14dhist",
+            "f_loc:phone_locations_barnett_disttravelled:14dhist",
+            "f_loc:phone_locations_doryab_avgspeed:14dhist",
+            "f_loc:phone_locations_doryab_numberofsignificantplaces:14dhist",
+            "f_loc:phone_locations_doryab_locationentropy:14dhist",
+            "f_loc:phone_locations_doryab_normalizedlocationentropy:14dhist",
+            "f_loc:phone_locations_barnett_hometime:14dhist",
+            "f_steps:fitbit_steps_intraday_rapids_sumdurationactivebout:14dhist",
+            "f_steps:fitbit_steps_intraday_rapids_sumdurationsedentarybout:14dhist",
+            "f_slp:fitbit_sleep_intraday_rapids_sumdurationawakeunifiedmain:14dhist",
+            "f_slp:fitbit_sleep_intraday_rapids_countepisodeawakeunifiedmain:14dhist",
+            "f_slp:fitbit_sleep_intraday_rapids_avgdurationasleepunifiedmain:14dhist"
+        ]
+  feature_list_more_feat_types: [
+            "f_loc:phone_locations_doryab_loglocationvariance:14dhist",
+            "f_loc:phone_locations_doryab_movingtostaticratio:14dhist",
+            "f_loc:phone_locations_barnett_disttravelled:14dhist",
+            "f_loc:phone_locations_doryab_avgspeed:14dhist",
+            "f_loc:phone_locations_doryab_numberofsignificantplaces:14dhist",
+            "f_loc:phone_locations_doryab_locationentropy:14dhist",
+            "f_loc:phone_locations_doryab_normalizedlocationentropy:14dhist",
+            "f_loc:phone_locations_barnett_hometime:14dhist",
+            "f_steps:fitbit_steps_intraday_rapids_sumdurationactivebout:14dhist",
+            "f_steps:fitbit_steps_intraday_rapids_sumdurationsedentarybout:14dhist",
+            "f_slp:fitbit_sleep_intraday_rapids_sumdurationawakeunifiedmain:14dhist",
+            "f_slp:fitbit_sleep_intraday_rapids_countepisodeawakeunifiedmain:14dhist",
+            "f_slp:fitbit_sleep_intraday_rapids_avgdurationasleepunifiedmain:14dhist"
+        ]
+
+training_params:
+  verbose: 0
+  # whether to save and re-use features repetitively
+  #     True only when re-running the exact same model training
+  save_and_reload: False

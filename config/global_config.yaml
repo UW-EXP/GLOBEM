@@ -1,0 +1,27 @@
+name: global
+
+# config for all algorithms
+all:
+  prediction_tasks: ["dep_weekly"] # list of model prediction tasks, should only contains major targets
+  # ds_keys: ["INS-W_1", "INS-W_2", "INS-W_3", "INS-W_4"] # list of datasets to analyze
+  ds_keys: ["INS-W-sample_1", "INS-W-sample_2", "INS-W-sample_3", "INS-W-sample_4"] # list of datasets to analyze
+
+  # Default False. Only True when the dataset in ds_keys all support an extended list of feature types.
+  # Currently only support INS-W
+  flag_more_feat_types: True
+
+# config for traditional algorithms
+ml:
+  training_params:
+    # whether to save and re-use features repetitively
+    #     True only when re-running the exact same algorithm
+    save_and_reload: False
+
+# config for deep learning based algorithms
+dl:
+  training_params:
+    best_epoch_strategy: "direct" # which strategy to pick the best training epoch
+    # whether to skip training
+    #     True only when the model training is finished
+    skip_training: False 
+

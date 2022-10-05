@@ -1,0 +1,13 @@
+!.gitignore
+*.zip
+!README.md
+!INS-W-sample_1
+!INS-W-sample_1/**
+!INS-W-sample_2
+!INS-W-sample_2/**
+!INS-W-sample_3
+!INS-W-sample_3/**
+!INS-W-sample_4
+!INS-W-sample_4/**
+.DS_Store
+**/.DS_Store

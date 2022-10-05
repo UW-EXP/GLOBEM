@@ -1,0 +1,37 @@
+name: "ml_wang"
+
+feature_definition:
+  use_norm_features: False # whether to use normalized features
+  empty_feature_filtering_th: 0.7 # remove features based on a threshold
+  include_device_type: False # whether to include device type in the feature matrix
+  # Feature used in the paper (a subset that is compatible within the dataset)
+  feature_list: [
+            "f_slp:fitbit_sleep_summary_rapids_sumdurationinbedmain:allday", 
+            "f_slp:fitbit_sleep_summary_rapids_firstbedtimemain:allday",
+            "f_slp:fitbit_sleep_summary_rapids_firstwaketimemain:allday",
+            "f_steps:fitbit_steps_intraday_rapids_sumdurationsedentarybout:allday",
+            "f_screen:phone_screen_rapids_sumdurationunlock:allday",
+            "f_screen:phone_screen_rapids_sumdurationunlock_locmap_study:allday",
+            "f_screen:phone_screen_rapids_sumdurationunlock_locmap_living:allday",
+            "f_loc:phone_locations_doryab_numberofsignificantplaces:allday",
+            "f_loc:phone_locations_barnett_hometime:allday",
+            "f_loc:phone_locations_locmap_duration_in_locmap_study:allday"
+        ]
+  feature_list_more_feat_types: [
+            "f_slp:fitbit_sleep_summary_rapids_sumdurationinbedmain:allday", 
+            "f_slp:fitbit_sleep_summary_rapids_firstbedtimemain:allday",
+            "f_slp:fitbit_sleep_summary_rapids_firstwaketimemain:allday",
+            "f_steps:fitbit_steps_intraday_rapids_sumdurationsedentarybout:allday",
+            "f_screen:phone_screen_rapids_sumdurationunlock:allday",
+            "f_screen:phone_screen_rapids_sumdurationunlock_locmap_study:allday",
+            "f_screen:phone_screen_rapids_sumdurationunlock_locmap_living:allday",
+            "f_loc:phone_locations_doryab_numberofsignificantplaces:allday",
+            "f_loc:phone_locations_barnett_hometime:allday",
+            "f_loc:phone_locations_locmap_duration_in_locmap_study:allday"
+        ]
+
+training_params:
+  verbose: 0
+  # whether to save and re-use features repetitively
+  #     True only when re-running the exact same model training
+  save_and_reload: False

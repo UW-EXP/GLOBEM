@@ -1,0 +1,40 @@
+name: "dl_mldg_ds_as_domain"
+
+feature_definition:
+  use_norm_features: True
+
+data_loader:
+  batch_size: 512
+  # Define how each data batch is sampled from multiple datasets and/or people
+  # option: "across_dataset", "within_dataset", "across_person", "within_person"
+  generate_by: "across_dataset"
+  
+  mixup: null # option to mixup data: null, "across" (person or dataset), "within" (person or dataset)
+  mixup_alpha: null # the strongness of mixup. from 0 to 1
+
+model_params:
+  arch: "1dCNN" # model architecture
+  # input dimension
+  # 2: a multi-channel time series data (for models like 1dCNN)
+  # 3: a single-channel image data (for models like 2dCNN)
+  input_dim: 2
+  conv_shapes: [8,8,8] # a list of convolutional layers shapes
+  embedding_size: 16 # vector length of the feature embedding network output
+  flag_y_vector: True # True: one hot vector on y for regular training
+  meta_training_proportion: 0.8 # portion of data to be used as the meta-train set, (1-portion) for the meta-test set
+  meta_testing_weight: 2 # weight of the loss on the meta-test
+
+
+training_params:
+  inner_optimizer: "Adam" # option: SGD or Adam
+  inner_learning_rate: 0.001
+  outer_optimizer: "Adam" # option: SGD or Adam
+  outer_learning_rate: 0.001
+
+  epochs: 200
+  steps_per_epoch: 100 # number of batches per epoch
+  cos_annealing_step: 20
+  cos_annealing_decay: 0.95
+  best_epoch_strategy: "direct" # option: direct or on_test
+  verbose: 0
+  skip_training: False

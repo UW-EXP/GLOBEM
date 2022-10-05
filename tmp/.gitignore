@@ -1,0 +1,12 @@
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
+# Include a few tmp folders
+!clustering/
+!clustering/.gitignore
+!reorder/
+!reorder/.gitignore
+!reorder/*.py
+!reorder/*.npy
+!example_read_results.py

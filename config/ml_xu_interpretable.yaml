@@ -1,0 +1,217 @@
+name: "ml_xu_interpretable"
+
+feature_definition:
+  use_norm_features: False # whether to use normalized features
+  empty_feature_filtering_th: 0.5 # remove features based on a threshold
+  include_device_type: False # whether to include device type in the feature matrix
+  # Feature used in the paper (a subset that is compatible within the dataset)
+  feature_list_base: [
+            "f_screen:phone_screen_rapids_avgdurationunlock",
+            "f_screen:phone_screen_rapids_stddurationunlock",
+            "f_screen:phone_screen_rapids_countepisodeunlock",
+            "f_screen:phone_screen_rapids_sumdurationunlock",
+            "f_slp:fitbit_sleep_intraday_rapids_maxdurationasleepunifiedmain",
+            "f_slp:fitbit_sleep_intraday_rapids_countepisodeasleepunifiedmain",
+            "f_slp:fitbit_sleep_intraday_rapids_countepisodeawakeunifiedmain",
+            "f_slp:fitbit_sleep_intraday_rapids_ratiodurationasleepunifiedwithinmain",
+            "f_slp:fitbit_sleep_intraday_rapids_sumdurationasleepunifiedmain",
+            "f_slp:fitbit_sleep_intraday_rapids_sumdurationawakeunifiedmain",
+            "f_steps:fitbit_steps_intraday_rapids_avgdurationactivebout",
+            "f_steps:fitbit_steps_intraday_rapids_avgdurationsedentarybout",
+            "f_steps:fitbit_steps_intraday_rapids_countepisodeactivebout",
+            "f_steps:fitbit_steps_intraday_rapids_countepisodesedentarybout",
+            "f_steps:fitbit_steps_intraday_rapids_sumsteps",
+            "f_loc:phone_locations_barnett_circdnrtn",
+            "f_loc:phone_locations_doryab_timeathome",
+            "f_loc:phone_locations_doryab_locationentropy",
+            "f_loc:phone_locations_doryab_loglocationvariance",
+            "f_loc:phone_locations_doryab_avglengthstayatclusters",
+            "f_loc:phone_locations_doryab_movingtostaticratio",
+            "f_loc:phone_locations_doryab_numberlocationtransitions",
+            "f_loc:phone_locations_doryab_numberofsignificantplaces",
+            "f_loc:phone_locations_doryab_outlierstimepercent",
+            "f_loc:phone_locations_doryab_radiusgyration",
+            "f_loc:phone_locations_doryab_totaldistance",
+            "f_loc:phone_locations_locmap_duration_in_locmap_study",
+            "f_loc:phone_locations_locmap_percent_in_locmap_study",
+            "f_loc:phone_locations_locmap_duration_in_locmap_exercise",
+            "f_loc:phone_locations_locmap_percent_in_locmap_exercise",
+            "f_loc:phone_locations_locmap_duration_in_locmap_greens",
+            "f_loc:phone_locations_locmap_percent_in_locmap_greens",
+        ]
+  feature_list_more_feat_types_base: [
+            "f_screen:phone_screen_rapids_avgdurationunlock",
+            "f_screen:phone_screen_rapids_stddurationunlock",
+            "f_screen:phone_screen_rapids_countepisodeunlock",
+            "f_screen:phone_screen_rapids_sumdurationunlock",
+            "f_slp:fitbit_sleep_intraday_rapids_maxdurationasleepunifiedmain",
+            "f_slp:fitbit_sleep_intraday_rapids_countepisodeasleepunifiedmain",
+            "f_slp:fitbit_sleep_intraday_rapids_countepisodeawakeunifiedmain",
+            "f_slp:fitbit_sleep_intraday_rapids_ratiodurationasleepunifiedwithinmain",
+            "f_slp:fitbit_sleep_intraday_rapids_sumdurationasleepunifiedmain",
+            "f_slp:fitbit_sleep_intraday_rapids_sumdurationawakeunifiedmain",
+            "f_steps:fitbit_steps_intraday_rapids_avgdurationactivebout",
+            "f_steps:fitbit_steps_intraday_rapids_avgdurationsedentarybout",
+            "f_steps:fitbit_steps_intraday_rapids_countepisodeactivebout",
+            "f_steps:fitbit_steps_intraday_rapids_countepisodesedentarybout",
+            "f_steps:fitbit_steps_intraday_rapids_sumsteps",
+            "f_loc:phone_locations_barnett_circdnrtn",
+            "f_loc:phone_locations_doryab_timeathome",
+            "f_loc:phone_locations_doryab_locationentropy",
+            "f_loc:phone_locations_doryab_loglocationvariance",
+            "f_loc:phone_locations_doryab_avglengthstayatclusters",
+            "f_loc:phone_locations_doryab_movingtostaticratio",
+            "f_loc:phone_locations_doryab_numberlocationtransitions",
+            "f_loc:phone_locations_doryab_numberofsignificantplaces",
+            "f_loc:phone_locations_doryab_outlierstimepercent",
+            "f_loc:phone_locations_doryab_radiusgyration",
+            "f_loc:phone_locations_doryab_totaldistance",
+            "f_loc:phone_locations_locmap_duration_in_locmap_study",
+            "f_loc:phone_locations_locmap_percent_in_locmap_study",
+            "f_loc:phone_locations_locmap_duration_in_locmap_exercise",
+            "f_loc:phone_locations_locmap_percent_in_locmap_exercise",
+            "f_loc:phone_locations_locmap_duration_in_locmap_greens",
+            "f_loc:phone_locations_locmap_percent_in_locmap_greens",
+            "f_blue:phone_bluetooth_doryab_countscansmostfrequentdeviceacrossdatasetothers",
+            "f_blue:phone_bluetooth_doryab_countscansmostfrequentdeviceacrossdatasetown",
+            "f_blue:phone_bluetooth_doryab_meanscansothers",
+            "f_blue:phone_bluetooth_doryab_meanscansown",
+            "f_blue:phone_bluetooth_doryab_uniquedevicesothers",
+            "f_blue:phone_bluetooth_doryab_uniquedevicesown",
+            "f_call:phone_calls_rapids_incoming_count",
+            "f_call:phone_calls_rapids_incoming_distinctcontacts",
+            "f_call:phone_calls_rapids_incoming_sumduration",
+            "f_call:phone_calls_rapids_missed_count",
+            "f_call:phone_calls_rapids_outgoing_count",
+            "f_call:phone_calls_rapids_outgoing_distinctcontacts",
+            "f_call:phone_calls_rapids_outgoing_sumduration",
+        ]
+
+model_params:
+  num_top_rule: 10 # number of top rules used for contextually filtered feature extraction
+  # rule selection metric params
+  metric_w1: 1.0
+  metric_w2: 1.5
+  metric_w3: 0.5
+
+  # associate rule mining threshold
+  arm_thresholds:
+    weekday:
+      morning:
+        supp: 0.125
+        conf: 0.125
+      afternoon:
+        supp: 0.125
+        conf: 0.125
+      evening:
+        supp: 0.125
+        conf: 0.125
+      night:
+        supp: 0.125
+        conf: 0.125
+    weekend:
+      morning:
+        supp: 0.125
+        conf: 0.125
+      afternoon:
+        supp: 0.125
+        conf: 0.125
+      evening:
+        supp: 0.125
+        conf: 0.125
+      night:
+        supp: 0.125
+        conf: 0.125
+
+  # associate rule mining threshold
+  # (higher than the normal params so that the number of rules can be controlled)
+  arm_thresholds_memory_safe:
+    weekday:
+      morning:
+        supp: 0.200
+        conf: 0.200
+      afternoon:
+        supp: 0.200
+        conf: 0.200
+      evening:
+        supp: 0.200
+        conf: 0.200
+      night:
+        supp: 0.200
+        conf: 0.200
+    weekend:
+      morning:
+        supp: 0.200
+        conf: 0.200
+      afternoon:
+        supp: 0.200
+        conf: 0.200
+      evening:
+        supp: 0.200
+        conf: 0.200
+      night:
+        supp: 0.200
+        conf: 0.200
+
+  arm_thresholds_memory_safer:
+    weekday:
+      morning:
+        supp: 0.350
+        conf: 0.350
+      afternoon:
+        supp: 0.350
+        conf: 0.350
+      evening:
+        supp: 0.350
+        conf: 0.350
+      night:
+        supp: 0.350
+        conf: 0.350
+    weekend:
+      morning:
+        supp: 0.350
+        conf: 0.350
+      afternoon:
+        supp: 0.350
+        conf: 0.350
+      evening:
+        supp: 0.350
+        conf: 0.350
+      night:
+        supp: 0.350
+        conf: 0.350
+
+  arm_thresholds_memory_safest:
+    weekday:
+      morning:
+        supp: 0.700
+        conf: 0.700
+      afternoon:
+        supp: 0.700
+        conf: 0.700
+      evening:
+        supp: 0.700
+        conf: 0.700
+      night:
+        supp: 0.900
+        conf: 0.900
+    weekend:
+      morning:
+        supp: 0.800
+        conf: 0.800
+      afternoon:
+        supp: 0.700
+        conf: 0.700
+      evening:
+        supp: 0.700
+        conf: 0.700
+      night:
+        supp: 0.900
+        conf: 0.900
+
+
+training_params:
+  verbose: 0
+  # whether to save and re-use features repetitively
+  #     True only when re-running the exact same model training
+  save_and_reload: False
