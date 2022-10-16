@@ -59,7 +59,7 @@ Below is a brief description of the platform and a simple tutorial on how to use
 
 ### TL;DR
 
-Our platform is tested with Python 3.7 under MacOS 11.6 (intel) and CentOS 7. Try the toolbox with one line of command, assuming Anaconda/miniconda is already installed on the machine. Please find the details of the setup and examples explained in the rest of tutorial.
+Our platform is tested with Python 3.7 under MacOS 11.6 (intel) and CentOS 7. Try the platform with one line of command, assuming Anaconda/miniconda is already installed on the machine. Please find the details of the setup and examples explained in the rest of tutorial.
 
 ```
 /bin/bash run.sh
@@ -69,7 +69,7 @@ Our platform is tested with Python 3.7 under MacOS 11.6 (intel) and CentOS 7. Tr
 
 ### Environment
 
-Our platform employs python to leverage its flexibility and large number of open libraries. Here is an example of using Anaconda or miniconda for environment setup:
+GLOBEm is a python-based platform to leverage its flexibility and large number of open libraries. Here is an example of using Anaconda or miniconda for environment setup:
 
 ```
 conda create -n globem python=3.7
@@ -149,7 +149,7 @@ with open("evaluation_output/evaluation_allbutone_datasets/dep_weekly/dl_reorder
 
 Please refer to [`analysis/prediction_results_analysis.ipynb`](./analysis/prediction_results_analysis.ipynb) for more examples of results processing.
 
-### Alternatives
+### Code Breakdown
 
 The two examples above are equivalent to the following code blocks:
 
@@ -179,11 +179,11 @@ print(df[["test_balanced_acc", "test_roc_auc"]])
         <td colspan="4" align="center">Balanced Accuracy</td>
         <td colspan="4" align="center">ROC AUC</td>
     </tr>
-    <tr style="font-weight:bold"> <td>Y1</td> <td>Y2</td> <td>Y3</td> <td>Y4</td> <td>Y1</td> <td>Y2</td> <td>Y3</td> <td>Y4</td> </tr>
+    <tr style="font-weight:bold"> <td>INS-1</td> <td>INS-2</td> <td>INS-3</td> <td>INS-4</td> <td>INS-1</td> <td>INS-2</td> <td>INS-3</td> <td>INS-4</td> </tr>
     <tr> <td>Chikersal et al.</td> <td>0.656</td> <td>0.611</td> <td>0.641</td> <td>0.690</td> <td>0.726</td> <td>0.679</td> <td>0.695</td> <td>0.763</td> </tr>
 </table>
 
-Reorder algorithm doing the leave-one-dataset-out generalization task:
+[Reorder](./algorithm/dl_reorder.py) algorithm doing the leave-one-dataset-out generalization task:
 
 ```python
 import pandas
@@ -210,7 +210,7 @@ print(df[["test_balanced_acc", "test_roc_auc"]])
         <td colspan="4" align="center">Balanced Accuracy</td>
         <td colspan="4" align="center">ROC AUC</td>
     </tr>
-    <tr style="font-weight:bold"> <td>Y1</td> <td>Y2</td> <td>Y3</td> <td>Y4</td> <td>Y1</td> <td>Y2</td> <td>Y3</td> <td>Y4</td> </tr>
+    <tr style="font-weight:bold"> <td>INS-1</td> <td>INS-2</td> <td>INS-3</td> <td>INS-4</td> <td>INS-1</td> <td>INS-2</td> <td>INS-3</td> <td>INS-4</td> </tr>
     <tr> <td>Reorder</td> <td>0.548</td> <td>0.542</td> <td>0.530</td> <td>0.568</td> <td>0.567</td> <td>0.564</td> <td>0.552</td> <td>0.571</td> </tr>
 </table>
 
@@ -223,7 +223,7 @@ Some intermediate files may be saved in [`tmp`](./tmp/) folder to accelerate rep
 By default, the platform is running on sample data from the datasets.
 
 To switch to the full data, please follow the following simple steps:
-1. Access and download the completed data from this page (we will add the link once the paper is accepted).
+1. Access and download the completed data from [the PhysioNet page](https://physionet.org/content/globem/1.0.0/).
 2. Unzip the downloaded data and put the datasets (each one is a unique folder) into [`data_raw`](./data_raw/). Please refer to [`data_raw/README.md`](./data_raw/README.md) for more dataset details.
 3. Go to [`config/global_config.py`](./config/global_config.py) to set `global_config["all"]["ds_keys"]` by commenting `line7` and uncommenting `line6`.
 
@@ -260,6 +260,8 @@ For traditional machine learning algorithms, this can be some off-the-shelf mode
 
 For deep learning algorithms, this is a definition of deep modeling architecture and training process (*e.g.,* [IRM](./algorithm/dl_irm.py)), and builds a deep model that is ready to be trained with input data.
 
+#### Multiple Models from One Algorithm
+
 It is worth noting that one algorithm can define multiple models. For example, [ERM](./algorithm/dl_erm.py) can use different deep learning architectures such as ERM-1D-CNN, ERM-2D-CNN, ERM-Transformer; [DANN](./algorithm/dl_dann.py) can take each dataset as a domain (DANN-dataset as domain), or each person as a domain (DANN-person as domain).
 
 ### <a name="module_config"></a> Configuration Module
@@ -277,7 +279,7 @@ The platform supports researchers in developing their own algorithms easily. Rea
 
 An algorithm just needs to extend the abstract class [`DepressionDetectionAlgorithmBase`](./algorithm/base.py) and implement:
 1. Define the function `prep_data_repo` (as the feature preparation module)
-    It takes in `DatasetDict` as the input and returns a `DataRepo` object (see [here](./data_loader/data_loader_ml.py)), which is a simple data object that saves `X`, `y`, and `pids` (subject id). This can be used for preparing both training and testing sets. 
+    It takes in `DatasetDict` as the input and returns a `DataRepo` object (see [here](./data_loader/data_loader_ml.py)), which is a simple data object that saves `X`, `y`, and `pids` (participant ids). This can be used for preparing both training and testing sets. 
 2. Define the function `prep_model` (as the model computation module)
     It returns a `DepressionDetectionClassifierBase` object (see [here](./algorithm/base.py)), which needs to support `fit` (model training), `predict` (model prediction), and `predict_proba` (model prediction with probability distribution).
 3. Add a configuration file in `config` (as the configuration module)
