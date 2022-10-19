@@ -1,5 +1,7 @@
 ![GLOBEM Logo](./figures/GLOBEM_logo.png)
 
+> This is the official codebase of the paper [GLOBEM Dataset: Multi-Year Datasets for Longitudinal Human Behavior Modeling Generalization](https://openreview.net/pdf?id=GKOa7yNH8Uh), accepted by NeurIPS 2022 Dataset and Benchmark Track ([OpenReview Link](https://openreview.net/forum?id=GKOa7yNH8Uh))
+
 # Introduction
 
 **GLOBEM** is a platform to accelerate cross-dataset generalization research in the longitudinal behavior modeling domain. The name `GLOBEM` is the short for **G**eneralization of **LO**ngitudinal **BE**havior **M**odeling.
@@ -341,3 +343,18 @@ This project adopts [Apache License 2.0](./LICENSE) and welcomes contributions a
 
 [^rapids]:
     Assuming that the new dataset was collected using the [AWARE framework](https://awareframework.com/) so that it can be processed by [RAPIDS](https://www.rapids.science/1.6/) directly. Otherwise, additional data transformation is needed before applying RAPIDS.
+
+# Citation
+
+If you find the dataset/codebase helpful in your research, please cite the following paper.
+
+```
+@inproceedings{
+    xu2022globem,
+    title={{GLOBEM} Dataset: Multi-Year Datasets for Longitudinal Human Behavior Modeling Generalization},
+    author={Xuhai Xu and Han Zhang and Yasaman S Sefidgar and Yiyi Ren and Xin Liu and Woosuk Seo and Jennifer Brown and Kevin Scott Kuehn and Mike A Merrill and Paula S Nurius and Shwetak Patel and Tim Althoff and Margaret E Morris and Eve A. Riskin and Jennifer Mankoff and Anind Dey},
+    booktitle={Thirty-sixth Conference on Neural Information Processing Systems Datasets and Benchmarks Track},
+    year={2022},
+    url={https://openreview.net/forum?id=GKOa7yNH8Uh}
+}
+```
