@@ -41,7 +41,7 @@ GLOBEM currently supports depression detection and closely reimplements the foll
 
 ## Multi-year Dataset ([`README.md`](./data_raw/README.md))
 
-Along with the GLOBEM, we released the frist multi-year mobile and wearable sensing datasets that contain four data collection studies from 2018 to 2021, covering over 700 person-years from 497 unique users. To download the dataset, please visit our [PhysioNet page](https://physionet.org/content/globem/1.0.0/), and [`data_raw/README.md`](./data_raw/README.md) for more details about data format.
+Along with the GLOBEM, we released the frist multi-year mobile and wearable sensing datasets that contain four data collection studies from 2018 to 2021, covering over 700 person-years from 497 unique users. To download the dataset, please visit our [PhysioNet page](https://physionet.org/content/globem), and [`data_raw/README.md`](./data_raw/README.md) for more details about data format.
 
 ![Overview of the data collection studies](./figures/data_collection.png)
 
@@ -225,7 +225,7 @@ Some intermediate files may be saved in [`tmp`](./tmp/) folder to accelerate rep
 By default, the platform is running on sample data from the datasets.
 
 To switch to the full data, please follow the following simple steps:
-1. Access and download the completed data from [the PhysioNet page](https://physionet.org/content/globem/1.0.0/).
+1. Access and download the completed data from [the PhysioNet page](https://physionet.org/content/globem).
 2. Unzip the downloaded data and put the datasets (each one is a unique folder) into [`data_raw`](./data_raw/). Please refer to [`data_raw/README.md`](./data_raw/README.md) for more dataset details.
 3. Go to [`config/global_config.py`](./config/global_config.py) to set `global_config["all"]["ds_keys"]` by commenting `line7` and uncommenting `line6`.
 

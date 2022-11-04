@@ -1,6 +1,6 @@
 # Introduction
 
-We present the basic description of the first released multi-year mobile and wearable sensing datasets that contain four data collection studies from 2018 to 2021, conducted at a Carnegie-classified R-1 university on the west coast. We name them `INS-W_1`, `INS-W_2`, `INS-W_3`, and `INS-W_4`. To download the dataset, please visit our [PhysioNet page](https://physionet.org/content/globem/1.0.0/).
+We present the basic description of the first released multi-year mobile and wearable sensing datasets that contain four data collection studies from 2018 to 2021, conducted at a Carnegie-classified R-1 university on the west coast. We name them `INS-W_1`, `INS-W_2`, `INS-W_3`, and `INS-W_4`. To download the dataset, please visit our [PhysioNet page](https://physionet.org/content/globem).
 
 We envision our datasets can:
 - Serve as a reliable testbed for a fair comparison between behavior modeling algorithms.
