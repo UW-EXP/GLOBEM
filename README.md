@@ -1,6 +1,10 @@
 ![GLOBEM Logo](./figures/GLOBEM_logo.png)
 
-> This is the official codebase of the paper [GLOBEM Dataset: Multi-Year Datasets for Longitudinal Human Behavior Modeling Generalization](https://openreview.net/pdf?id=GKOa7yNH8Uh), accepted by NeurIPS 2022 Dataset and Benchmark Track ([OpenReview Link](https://openreview.net/forum?id=GKOa7yNH8Uh))
+> This is the official codebase of the dataset paper [GLOBEM Dataset: Multi-Year Datasets for Longitudinal Human Behavior Modeling Generalization](https://arxiv.org/abs/2211.02733), accepted by NeurIPS 2022 Dataset and Benchmark Track ([Link](https://arxiv.org/abs/2211.02733))
+
+
+> This is the official codebase of the platform paper [GLOBEM: Cross-Dataset Generalization of Longitudinal Human
+Behavior Modeling](https://orsonxu.com/wp-content/uploads/Projects/GLOBEM/GLOBEM_IMWUT22.pdf), accepted by IMWUT 2022 ([Link](https://orsonxu.com/wp-content/uploads/Projects/GLOBEM/GLOBEM_IMWUT22.pdf))
 
 # Introduction
 
@@ -350,11 +354,21 @@ If you find the dataset/codebase helpful in your research, please cite the follo
 
 ```
 @inproceedings{
-    xu2022globem,
+    xu2022globem_neurips,
     title={{GLOBEM} Dataset: Multi-Year Datasets for Longitudinal Human Behavior Modeling Generalization},
     author={Xuhai Xu and Han Zhang and Yasaman S Sefidgar and Yiyi Ren and Xin Liu and Woosuk Seo and Jennifer Brown and Kevin Scott Kuehn and Mike A Merrill and Paula S Nurius and Shwetak Patel and Tim Althoff and Margaret E Morris and Eve A. Riskin and Jennifer Mankoff and Anind Dey},
     booktitle={Thirty-sixth Conference on Neural Information Processing Systems Datasets and Benchmarks Track},
     year={2022},
-    url={https://openreview.net/forum?id=GKOa7yNH8Uh}
+    url={https://arxiv.org/abs/2211.02733}
+}
+
+@article{
+    xu2022globem_imwut,
+	title = {{GLOBEM}: {Cross}-{Dataset} {Generalization} of {Longitudinal} {Human} {Behavior} {Modeling}},
+	volume = {6},
+	number = {4},
+	journal = {Proceedings of the ACM on Interactive, Mobile, Wearable and Ubiquitous Technologies},
+	author = {Xu, Xuhai and Liu, Xin and Zhang, Han and Wang, Weichen and Nepal, Subgiya and Kuehn, Kevin S and Huckins, Jeremy and Morris, Margaret E and Nurius, Paula S and Riskin, Eve A and Patel, Shwetak and Althoff, Tim and Campell, Andrew and Dey, Anind K and Mankoff, Jennifer},
+	year = {2022}
 }
 ```
