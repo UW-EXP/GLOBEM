@@ -39,7 +39,7 @@ GLOBEM currently supports depression detection and closely reimplements the foll
     - [Meta-Learning for Domain Generalization (MLDG)](http://arxiv.org/abs/1710.03463), by Li *et al.*, 2017
     - [Model-Agnostic Learning of Semantic Features (MASF)](http://arxiv.org/abs/1910.13580), by Dou *et al.*, 2019
     - [Siamese Network](http://www.cs.toronto.edu/~gkoch/files/msc-thesis.pdf), by Koch *et al.*, 2015
-    - Reorder
+    - [Reorder](https://orsonxu.com/wp-content/uploads/Projects/GLOBEM/GLOBEM_IMWUT22.pdf), by Xu *et al.*, 2022
 
 # Highlight
 
