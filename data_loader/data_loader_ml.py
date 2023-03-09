@@ -16,13 +16,18 @@ class DatasetDict():
 
 class DataRepo():
     """A data structor focused on saving data input matrix X, label y, and participant ID (pid)"""
-    def __init__(self, X:pd.DataFrame, y:pd.Series, pids:pd.Series):
+    def __init__(self, X:pd.DataFrame, y:pd.Series, pids:pd.Series, demographic: pd.DataFrame=None):
         self.X = deepcopy(X)
         self.y = deepcopy(y)
         self.pids = deepcopy(pids)
+        if demographic is not None:
+            self.demographic = deepcopy(demographic)
 
     def __getitem__(self, key):
-        return DataRepo(self.X[key], self.y[key], self.pids[key])
+        if self.demographic is not None:
+            return DataRepo(self.X[key], self.y[key], self.pids[key], self.demographic[key])
+        else:
+            return DataRepo(self.X[key], self.y[key], self.pids[key])
 
 class DataRepo_tf(DataRepo):
     """A variant of DataRepo. It has the same structure of DataRepo.
@@ -155,6 +160,23 @@ def data_loader_single_dataset_label_based(institution:str, phase:int,
     df_participant_file["pid"] = df_participant_file["pid"].apply(lambda x : f"{x}#{institution}_{phase}")
     df_participant_file = df_participant_file.set_index("pid")
 
+    print(f"start adding demograhic info to {institution}, {phase}\n")
+    df_demographic_file = pd.read_csv(data_factory.survey_folder[institution][phase] + "demo.csv", low_memory=False)
+    df_demographic_file["pid"] = df_demographic_file["pid"].apply(lambda x : f"{x}#{institution}_{phase}")
+    df_demographic_file = df_demographic_file.set_index("pid")
+    # some indices are not available in demographic files
+    missing_index = pd.Index(df_full_rawdata["pid"].unique()).difference(df_demographic_file.index)
+    # create a new dataframe with these missing indices
+    missing_demographic = pd.DataFrame(index=missing_index, columns=df_demographic_file.columns)
+    df_demographic_file = df_demographic_file.append(missing_demographic)
+
+    mode_dict = df_demographic_file.mode(axis=0).iloc[0, :].to_dict()
+    # use the most frequent label to fill in
+    df_demographic_file = df_demographic_file.fillna(mode_dict)
+    
+    # change the str type to int
+    df_demographic_file["race_DEMO"] = df_demographic_file["race_DEMO"].replace(data_factory.race_labels_to_value)
+    # merge with the demographic data
     df_label, prediction_target_col = data_loader_read_label_file(institution, phase, prediction_target)
 
     datapoints = []
@@ -184,7 +206,7 @@ def data_loader_single_dataset_label_based(institution:str, phase:int,
         df_data_window = df_data_windowplaceholder.merge(df_data_window, left_on=["pid","date"], right_on=["pid","date"], how="left")
         df_data_window = deepcopy(df_data_window)
 
-        datapoint = {"pid":pid, "date": date_end,
+        datapoint = {"pid":pid, "date": date_end, "demographic": df_demographic_file.loc[pid], 
                      "X_raw": df_data_window[retained_features], "y_raw": row[prediction_target_col], "y_allraw": row,
                      "device_type": df_participant_file.loc[pid]["platform"].split(";")[0] }
         datapoints.append(datapoint)
@@ -218,7 +240,7 @@ def data_loader_single_dataset_raw(institution:str, phase:int, prediction_target
     df_participant_file = pd.read_csv(data_factory.participants_info_folder[institution][phase] + "platform.csv", low_memory=False)
     df_participant_file["pid"] = df_participant_file["pid"].apply(lambda x : f"{x}#{institution}_{phase}")
     df_participant_file = df_participant_file.set_index("pid")
-
+    
     df_label, prediction_target_col = data_loader_read_label_file(institution, phase, prediction_target)
 
     retained_features = ["pid", "date"]
@@ -309,6 +331,7 @@ def data_loader_raw_single(institution:str, phase:int) -> pd.DataFrame:
         pd.DataFrame: raw data of a dataset
     """
     ds_key = f"{institution}_{phase}"
+    ##already generated the dataset
     dataset_file_path = os.path.join(path_definitions.DATA_PATH, "datarepo_df_raw", f"dep--{ds_key}.pkl")
 
     if (os.path.exists(dataset_file_path)):

@@ -152,6 +152,8 @@ class DepressionDetectionAlgorithm_ML_xu_personalized(DepressionDetectionAlgorit
         X_raw["pid"] = row["pid_new"]
         X_raw["pid_origin"] = row["pid"]
         X_raw["y_raw"] = row["y_raw"]
+        for label in row["demographic"].index:
+            X_raw[label] = row["demographic"].loc[label]
         return X_raw
 
     def data_conversion_imputation(self, df_dis: pd.DataFrame, flag_train:bool = False):
@@ -222,12 +224,14 @@ class DepressionDetectionAlgorithm_ML_xu_personalized(DepressionDetectionAlgorit
 
         Path(self.results_save_folder).mkdir(parents=True, exist_ok=True)
         self.save_file_path = os.path.join(self.results_save_folder, dataset.key + "--" + dataset.prediction_target + ".pkl")
-
+        
         df_datapoint_extend = deepcopy(dataset.datapoints)
         df_datapoint_extend["pid_new"] = df_datapoint_extend["pid"] + "@" + df_datapoint_extend["date"].apply(lambda x : x.strftime("%Y-%m-%d"))
         df_datapoint_extend_unravel = df_datapoint_extend.apply(lambda row: self.unravel_df(row, flag_train), axis = 1)
         df_datapoint_extend = pd.concat(list(df_datapoint_extend_unravel))
-        df_labels = df_datapoint_extend[["pid", "y_raw", "pid_origin"]].drop_duplicates(keep="first").set_index("pid")
+        # columns that are about demographic information
+        demo_columns = list(df_datapoint_extend.columns[df_datapoint_extend.columns.str.endswith("DEMO")])
+        df_labels = df_datapoint_extend[["pid", "y_raw", "pid_origin"] + demo_columns].drop_duplicates(keep="first").set_index("pid")
 
         if (self.config["training_params"]["save_and_reload"] and os.path.exists(self.save_file_path)):
             with open(self.save_file_path, "rb") as f:
@@ -267,9 +271,15 @@ class DepressionDetectionAlgorithm_ML_xu_personalized(DepressionDetectionAlgorit
 
         y = df_labels["y_raw"][X.index]
         pids = df_labels["pid_origin"][X.index]
+       
+        demo_df = []
+        for index in X.index:   
+            demo_series = df_labels.loc[index, demo_columns]
+            demo_df.append({"demographic": demo_series})
+        demographic = pd.DataFrame(demo_df)["demographic"]
         self.prep_dataset_key = deepcopy(dataset.key)
 
-        self.data_repo = DataRepo(X=X, y=y, pids=pids)
+        self.data_repo = DataRepo(X=X, y=y, pids=pids, demographic=demographic)
         self.data_repo.key = deepcopy(dataset.key)
         self.data_repo.prediction_target = deepcopy(dataset.prediction_target)
         return self.data_repo

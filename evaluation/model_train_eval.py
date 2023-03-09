@@ -10,6 +10,8 @@ import argparse
 
 if __name__ == "__main__":
 
+    init_global_variables()
+
     flag_compute_data = False
     folder = os.path.dirname(os.path.realpath(__file__))
 
@@ -69,6 +71,12 @@ if __name__ == "__main__":
 
     # Single Dataset Evaluation
     if ("single" in eval_task or "all" in eval_task):
+        # TODO: unifies global variables
+        from utils.common_settings import GV
+        GV.folder_1 = os.path.join('./tmp/cross_validate/', config_name, 'single')
+        mkdir(GV.folder_1)
+        # print('folder_1: ', GV.folder_1)
+
         if not flag_dl:
             ray.init(num_cpus=NJOB, ignore_reinit_error=True)
         print("|"*10, "start --", config_name, "single ds", "|"*10)

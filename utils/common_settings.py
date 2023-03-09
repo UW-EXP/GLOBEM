@@ -98,6 +98,21 @@ from basic_utils import utils_ml
 from basic_utils import utils_operation
 
 ################
+# Global variables
+class global_variables():
+    def __init__(self):
+        self._folder_1 = None
+        self._folder_2 = None
+        self._cnt_cv = 0
+def init_global_variables():
+    global GV
+    GV = global_variables()
+################
+def mkdir(path):
+	if not os.path.exists(path):
+		os.makedirs(path)
+
+################
 # Ensure reproducibility
 ################
 

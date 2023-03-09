@@ -520,8 +520,11 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
 
         y = df_datapoints_traintest["y_raw"][X.index]
         pids = df_datapoints_traintest["pid"][X.index]
+        # if "demographic" in df_datapoints_traintest and df_datapoints_traintest["demographic"] is not None:
+        #     print("we still have demographic info here\n")
+        demographic = df_datapoints_traintest["demographic"][X.index]
 
-        self.data_repo = DataRepo(X=X, y=y, pids=pids)
+        self.data_repo = DataRepo(X=X, y=y, pids=pids, demographic=demographic)
         return self.data_repo
 
     def get_wks(self, df: pd.DataFrame, wk: str):
