@@ -129,9 +129,9 @@ def results_calculate(y_test = None, y_pred = None, confusion_mtx = None, labels
     # print("y_test: ", y_test)
     # print("y_pred: ", y_pred)
     if (confusion_mtx is None):
-        if isinstance(y_test, np.bool_):
+        if isinstance(y_test, np.bool_) or isinstance(y_test, float):
             y_test = [y_test]
-        if isinstance(y_pred, np.bool_):
+        if isinstance(y_pred, np.bool_) or isinstance(y_pred, float):
             y_pred = [y_pred]
         try:
             confusion_mtx = confusion_matrix(y_true = y_test, y_pred = y_pred, labels = [False,True])
@@ -322,6 +322,7 @@ def results_report_demo(y_test = None, y_pred = None, demographic = None,
     results = results_calculate(y_pred=y_pred, y_test=y_test, verbose=verbose, labels=labels, return_confusion_mtx=return_confusion_mtx)
     for k, v in results.items():
         pass # print('{}: {}'.format(k, v))
+    print('balanced_acc: {:.04f}'.format(results['balanced_acc']))
     return results
 
 def get_clf(clf_type, parameters, direct_param_flag = False):

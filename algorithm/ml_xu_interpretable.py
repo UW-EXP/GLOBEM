@@ -71,6 +71,9 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
 
         self.SYS_MEM_MAX_GB = int(psutil.virtual_memory().total / (1024.0**3))
 
+        # for debug
+        self.verbose = 1
+
     def set_arm_threshold(self, flag_th_memory_safe:str = "normal"):
         if (flag_th_memory_safe == "normal"):
             key = "arm_thresholds"
@@ -219,16 +222,25 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
                     axis = 1).values
             return df_tmp[["pid", "date", "dis_value"]]    
 
+        if (self.verbose > 0):
+            pass
+            # print("ARM for slice:", slice_key)
+            # print("top features:", self.top_feature_dict_dis[slice_key])
+            # print("df_grp:", df_grp)
         # prep int list for arm
         data_arm_int = df_grp["X_raw"].apply(lambda x : prep_arm(x, self.top_feature_dict_dis[slice_key]))
         # drop duplicate person day
         data_arm = list(pd.concat(data_arm_int.values, axis = 0).drop_duplicates(["pid", "date"])["dis_value"].values)
 
+        print('spark.driver.memory', f"{int(self.SYS_MEM_MAX_GB // 3)}G")
+        print('spark.driver.maxResultSize', f"{int(self.SYS_MEM_MAX_GB // 5)}G")
         spark = SparkSession.builder.appName("FPGrowthExample")\
             .config("spark.executor.memory", f"{int(self.SYS_MEM_MAX_GB // 3)}G") \
             .config("spark.driver.memory", f"{int(self.SYS_MEM_MAX_GB // 3)}G") \
             .config('spark.driver.maxResultSize', f"{int(self.SYS_MEM_MAX_GB // 5)}G") \
+            .config('spark.port.maxRetries', 100) \
             .getOrCreate()
+
         df_arm_spark = spark.createDataFrame(
             data=[(idx, arm_int_epoch) for idx, arm_int_epoch in enumerate(data_arm) if len(arm_int_epoch) > 1],
             schema=["id", "items"])
@@ -243,6 +255,13 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
         return df_arm_output[["X","Y","idx","support","confidence","lift"]]
         
     def arm_grp_contrast_slice(self, df_twogrps: pd.DataFrame, slice_key: str):
+        if (self.verbose > 0):
+            pass
+            # print("df_twogrps:", df_twogrps)
+            # print("df_twogrps[\"y_raw\"]:", df_twogrps["y_raw"])
+            # print("df_twogrps[df_twogrps[\"y_raw\"]]:", df_twogrps[df_twogrps["y_raw"]])
+            # print("df_twogrps[~df_twogrps[\"y_raw\"]]:", df_twogrps[~df_twogrps["y_raw"]])
+
         df_grp1 = df_twogrps[df_twogrps["y_raw"]]
         df_grp2 = df_twogrps[~df_twogrps["y_raw"]]
 

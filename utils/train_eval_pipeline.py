@@ -91,7 +91,7 @@ def calc_cv_oneloop(clf: DepressionDetectionClassifierBase, data_repo: DataRepo,
     while True: 
         repeat_time += 1
         # TODO: for dep_endterm
-        n_splits = 5
+        n_splits = 20
         cv = StratifiedGroupKFold(n_splits=min(n_splits, pidnum_min),shuffle=True,random_state=42+random_seed_index+repeat_time*1000)
         if (judge_corner_cvsplit(cv, data_repo)):
             continue
