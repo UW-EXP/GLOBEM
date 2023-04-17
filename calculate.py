@@ -18,24 +18,49 @@ def mkdir(path):
 
 
 config_names = ['ml_canzian', 'ml_farhan', 'ml_lu', 'ml_saeb', 'ml_wahle', 'ml_wang', 'ml_chikersal', 'ml_xu_interpretable', 'ml_xu_personalized']
-
+faireval_folder = "fairevals"
 eval_task = 'single'
 pred_target = 'dep_weekly'
 pred_target = 'dep_endterm'
 ds_keys = ['INS-W_1', 'INS-W_2', 'INS-W_3', 'INS-W_4']
 
-folder = os.path.join('./tmp/cross_validate/', config_names[0], eval_task, pred_target, ds_keys[0])
-dirs = os.listdir(folder)
-prefices = set([dir[:-7] for dir in dirs])
-cnt = len(dirs) // len(prefices)
-print('cnt', cnt)
+sensitive_attrs = ["race", "gender", "student_1stGen", "student_international", 
+                    "generation", "orientation_heterosexual", "parent_edu_father", "parent_edu_mother"]
 
-metrics = {}
-# metrics.update({"accuracy": accuracy_score, "precision": precision_score, "recall": recall_score})
-# metrics.update({"f1": f1_score, "roc_auc": roc_auc_score, "balanced_accuracy": balanced_accuracy_score})
-# metrics.update({"f1": f1_score, "balanced_accuracy": balanced_accuracy_score})
-# metrics.update({"false_positive_rate": false_positive_rate, "false_negative_rate": false_negative_rate})
-metrics.update({"balanced_accuracy": balanced_accuracy_score})
+sensitive_attrs_mapping = {
+    "race": "Race",
+    "gender": "Gender",
+    "student_1stGen": "First Generation Student",
+    "student_international": "International Student",
+    "college_engineer": "Engineering Major",
+    "generation": "Generation Status",
+    "orientation_heterosexual": "Heterosexual Orientation",
+    "parent_edu_father": "Father's Education Level",
+    "parent_edu_mother": "Mother's Education Level"
+}
+
+metrics = ["accuracy", "recall", "fpr", "fnr"]
+metrics_fullname = ["Accuracy", "Recall", "False positive rate", "False negative rate"]
+
+value2label = {
+#     "race": {0: "Asian", 1: "Black", 2: "White", 3: "Latinx", 4: "Biracial"}, TODO: Leijie to double check
+    "race": {0: "Asian", 1: "White", 2: "Biracial", 3: "Black", 4: "Latinx"},
+    "gender": {1: "Male", 2: "Non-male", 3: "Non-male", 4: "Non-male", 6: "Non-male"},
+    "orientation_heterosexual": {0: "Non-heterosexual", 1: "Heterosexual"},
+    "student_international": {0: "Non-international", 1: "International"},
+    "student_1stGen": {0: "Non-first-gen", 1: "First-gen"},
+    "parent_edu_mother": {0: "Below bachelor's degree", 1: "Bachelor's degree and above"},
+    "parent_edu_father": {0: "Below bachelor's degree", 1: "Bachelor's degree and above"},
+    "generation": {0: "Non-immigrant", 1: "Immigrant"},
+    "disability": {0: "Non-disabled", 1: "Disabled"}
+}
+
+# metrics = {}
+# # metrics.update({"accuracy": accuracy_score, "precision": precision_score, "recall": recall_score})
+# # metrics.update({"f1": f1_score, "roc_auc": roc_auc_score, "balanced_accuracy": balanced_accuracy_score})
+# # metrics.update({"f1": f1_score, "balanced_accuracy": balanced_accuracy_score})
+# # metrics.update({"false_positive_rate": false_positive_rate, "false_negative_rate": false_negative_rate})
+# metrics.update({"balanced_accuracy": balanced_accuracy_score})
 
 for k, ds_key in enumerate(ds_keys):
     n_cfg = len(config_names)
@@ -46,6 +71,7 @@ for k, ds_key in enumerate(ds_keys):
         dirs = os.listdir(folder)
         prefices = set([dir[:-7] for dir in dirs])
         cnt = len(dirs) // len(prefices)
+
         preds = []
         targs = []
         demos = []
@@ -65,10 +91,8 @@ for k, ds_key in enumerate(ds_keys):
             preds.append(pred)
             targs.append(targ)
             demos.append(demo)
-
             targ = targ.values
-            # print('targ', targ)
-            # print('pred', pred)
+           
             # get the confusion matrix between pred and targ
             tp = np.sum(np.logical_and(pred == 1, targ == 1))
             fn = np.sum(np.logical_and(pred == 0, targ == 1))
@@ -80,27 +104,30 @@ for k, ds_key in enumerate(ds_keys):
             bacc = (rec + spec) / 2
             baccs.append(bacc)
 
-            mf = MetricFrame(metrics=metrics, y_true=targ, y_pred=pred, sensitive_features=np.zeros(demo.shape[0]))
-            for metric in metrics:
-                results[metric].append(mf.overall[metric])
-        
-        # print('baccs', baccs)
-        print('mean bacc', '{:.04f}'.format(np.mean(baccs)))
-
-        for metric in metrics:
-            # print(np.array(results[metric]))
-            pass # print(metric, '{:.04f}'.format(np.mean(results[metric])))
-
         pred = np.concatenate(preds)
         targ = pd.concat(targs)
         demo = pd.concat(demos)
-        
-        mf = MetricFrame(metrics=metrics, y_true=targ, y_pred=pred, sensitive_features=np.zeros(demo.shape[0]))
-        
-        folder_output = os.path.join('./tmp/cross_validate_output/', config_name, eval_task, pred_target, ds_key)
-        mkdir(os.path.join(folder_output))
-        mf.overall.to_csv(os.path.join(folder_output, 'overall.csv'))
+        correct_pred = pred == targ
+        correct_pred.replace({True: 1, False: 0},inplace=True)
+        correct_pred = pd.concat([demo, correct_pred.rename('correct_pred')], axis=1)
 
-        # print('balanced_accuracy: {:.04f}'.format(mf.overall['balanced_accuracy']))
-    
+        metrics = {"accuracy": accuracy_score, 
+                    "recall": recall_score, 
+                    "fnr": false_negative_rate, 
+                    "fpr": false_positive_rate
+                }
+
+        fair_evals = {}
+        for col in demo.columns:
+            faireval = MetricFrame(metrics=metrics, y_true=targ, y_pred=pred, sensitive_features=demo[col])
+            fair_evals[col] = faireval
+        
+        folder_output = os.path.join(faireval_folder, config_name, eval_task, pred_target, ds_key)
+        mkdir(os.path.join(folder_output))
+        print(folder_output)
+        for col, mf in fair_evals.items():
+            mf.by_group.to_csv(os.path.join(folder_output, '{}_by_group.csv'.format(col)))
+        mf.overall.append(pd.Series(np.mean(baccs), index=['bal_acc'])).to_csv(os.path.join(folder_output, 'overall.csv'.format(col)))
+        correct_pred.to_csv(os.path.join(folder_output, 'correct_prediction.csv'),index=False)
+
     pass # plt.show()
