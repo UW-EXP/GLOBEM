@@ -1,7 +1,6 @@
 import os, sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils.common_settings import *
-from utils.common_settings import GV
 from data_loader import data_loader_ml, data_loader_dl
 from utils import path_definitions, train_eval_pipeline
 from algorithm import algorithm_factory
@@ -73,6 +72,7 @@ if __name__ == "__main__":
     # Single Dataset Evaluation
     if ("single" in eval_task or "all" in eval_task):
         # TODO: unifies global variables
+        from utils.common_settings import GV
         GV.folder_1 = os.path.join('./tmp/cross_validate/', config_name, 'single')
         mkdir(GV.folder_1)
         # print('folder_1: ', GV.folder_1)
