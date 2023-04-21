@@ -176,6 +176,14 @@ def data_loader_single_dataset_label_based(institution:str, phase:int,
     
     # change the str type to int
     df_demographic_file["race_DEMO"] = df_demographic_file["race_DEMO"].replace(data_factory.race_labels_to_value)
+    with open(os.path.join(os.path.dirname(os.path.abspath(Path(__file__).parent)),"config", f"global_config.yaml"), "r") as f:
+    global_config = yaml.safe_load(f)
+    demographic_feature = global_config["all"]["demographic_feature"]
+    demographic_label = global_config["all"]["demographic_label"]
+
+    df_demographic_file["is_sensitive"] = 2 * (df_demographic_file[demographic_feature] == demographic_label) - 1
+    # merge this new column to the data points, that is, X
+    df_full_rawdata = df_full_rawdata.merge(df_demographic_file["is_sensitive"], how="left", left_on="pid", right_index=True)
     # merge with the demographic data
     df_label, prediction_target_col = data_loader_read_label_file(institution, phase, prediction_target)
 
