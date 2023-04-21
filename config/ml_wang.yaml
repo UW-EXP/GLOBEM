@@ -16,7 +16,7 @@ feature_definition:
             "f_loc:phone_locations_doryab_numberofsignificantplaces:allday",
             "f_loc:phone_locations_barnett_hometime:allday",
             "f_loc:phone_locations_locmap_duration_in_locmap_study:allday",
-	    "is_sensitive"
+            "is_sensitive"
         ]
   feature_list_more_feat_types: [
             "f_slp:fitbit_sleep_summary_rapids_sumdurationinbedmain:allday", 
@@ -30,7 +30,7 @@ feature_definition:
             "f_loc:phone_locations_barnett_hometime:allday",
             "f_loc:phone_locations_locmap_duration_in_locmap_study:allday",
             "is_sensitive"        
-]
+        ]
 
 training_params:
   verbose: 0

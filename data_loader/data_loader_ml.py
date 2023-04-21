@@ -177,10 +177,10 @@ def data_loader_single_dataset_label_based(institution:str, phase:int,
     # change the str type to int
     df_demographic_file["race_DEMO"] = df_demographic_file["race_DEMO"].replace(data_factory.race_labels_to_value)
     with open(os.path.join(os.path.dirname(os.path.abspath(Path(__file__).parent)),"config", f"global_config.yaml"), "r") as f:
-    global_config = yaml.safe_load(f)
+        global_config = yaml.safe_load(f)
     demographic_feature = global_config["all"]["demographic_feature"]
     demographic_label = global_config["all"]["demographic_label"]
-
+    print(f"add demographic feature {demographic_feature}, focus on {demographic_label}\n")
     df_demographic_file["is_sensitive"] = 2 * (df_demographic_file[demographic_feature] == demographic_label) - 1
     # merge this new column to the data points, that is, X
     df_full_rawdata = df_full_rawdata.merge(df_demographic_file["is_sensitive"], how="left", left_on="pid", right_index=True)
@@ -193,7 +193,7 @@ def data_loader_single_dataset_label_based(institution:str, phase:int,
         fts = ['f_loc', 'f_screen', 'f_slp', 'f_steps']
     else:
         fts = ['f_loc', 'f_screen', 'f_slp', 'f_steps', "f_blue", "f_call"]
-    retained_features = ["pid", "date"]
+    retained_features = ["pid", "date","is_sensitive"]
     for col in df_full_rawdata.columns:
         for ft in fts:
             if (col.startswith(ft)):
