@@ -104,6 +104,8 @@ class global_variables():
         self._folder_1 = None
         self._folder_2 = None
         self._cnt_cv = 0
+        self._demographic_feature = 'gender_DEMO'
+        self._demographic_label = 1
 def init_global_variables():
     global GV
     GV = global_variables()

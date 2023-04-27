@@ -32,6 +32,10 @@ if __name__ == "__main__":
         "(8) 'all' - do all evaluation setup from (1) to (7).\n Default 'allbutone'.")
     parser.add_argument('--verbose', default=1, type = int,
         help = "Whether to print intermediate pipeline results. 0: minimal output, 1: normal output, 2: detail output")
+    parser.add_argument('--demographic_feature', default='gender_DEMO', type=str,
+        help = "Demographic feature. Default 'gender_DEMO'.")
+    parser.add_argument('--demographic_label', default=1, type=int,
+        help = "Demographic label. Default 1.")
 
     args = parser.parse_args()
     print(args)
@@ -73,9 +77,13 @@ if __name__ == "__main__":
     if ("single" in eval_task or "all" in eval_task):
         # TODO: unifies global variables
         from utils.common_settings import GV
+        GV._demographic_feature = args.demographic_feature
+        GV._demographic_label = args.demographic_label
+
         GV.folder_1 = os.path.join('./tmp/cross_validate/', config_name, 'single')
+        GV.folder_1 = os.path.join('./tmp/cross_validate_{}_{}/'.format(GV._demographic_feature, GV._demographic_label), config_name, 'single')
         mkdir(GV.folder_1)
-        # print('folder_1: ', GV.folder_1)
+        print('folder_1: ', GV.folder_1)
 
         if not flag_dl:
             ray.init(num_cpus=NJOB, ignore_reinit_error=True)

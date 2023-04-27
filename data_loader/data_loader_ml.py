@@ -180,6 +180,13 @@ def data_loader_single_dataset_label_based(institution:str, phase:int,
         global_config = yaml.safe_load(f)
     demographic_feature = global_config["all"]["demographic_feature"]
     demographic_label = global_config["all"]["demographic_label"]
+
+    from utils.common_settings import GV
+    demographic_feature = GV._demographic_feature
+    demographic_label = GV._demographic_label
+    print('[GV] demographic_feature', demographic_feature)
+    print('[GV] demographic_label', demographic_label)
+
     print(f"add demographic feature {demographic_feature}, focus on {demographic_label}\n")
     df_demographic_file["is_sensitive"] = 2 * (df_demographic_file[demographic_feature] == demographic_label) - 1
     # merge this new column to the data points, that is, X
