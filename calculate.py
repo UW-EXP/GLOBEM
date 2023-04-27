@@ -19,6 +19,7 @@ def mkdir(path):
 
 config_names = ['ml_canzian', 'ml_farhan', 'ml_lu', 'ml_saeb', 'ml_wahle', 'ml_wang', 'ml_chikersal', 'ml_xu_interpretable', 'ml_xu_personalized']
 faireval_folder = "fairevals"
+faireval_folder = "fairevals_is_sensitive"
 eval_task = 'single'
 pred_target = 'dep_weekly'
 pred_target = 'dep_endterm'
@@ -43,7 +44,6 @@ metrics = ["accuracy", "recall", "fpr", "fnr"]
 metrics_fullname = ["Accuracy", "Recall", "False positive rate", "False negative rate"]
 
 value2label = {
-#     "race": {0: "Asian", 1: "Black", 2: "White", 3: "Latinx", 4: "Biracial"}, TODO: Leijie to double check
     "race": {0: "Asian", 1: "White", 2: "Biracial", 3: "Black", 4: "Latinx"},
     "gender": {1: "Male", 2: "Non-male", 3: "Non-male", 4: "Non-male", 6: "Non-male"},
     "orientation_heterosexual": {0: "Non-heterosexual", 1: "Heterosexual"},
@@ -55,19 +55,13 @@ value2label = {
     "disability": {0: "Non-disabled", 1: "Disabled"}
 }
 
-# metrics = {}
-# # metrics.update({"accuracy": accuracy_score, "precision": precision_score, "recall": recall_score})
-# # metrics.update({"f1": f1_score, "roc_auc": roc_auc_score, "balanced_accuracy": balanced_accuracy_score})
-# # metrics.update({"f1": f1_score, "balanced_accuracy": balanced_accuracy_score})
-# # metrics.update({"false_positive_rate": false_positive_rate, "false_negative_rate": false_negative_rate})
-# metrics.update({"balanced_accuracy": balanced_accuracy_score})
-
 for k, ds_key in enumerate(ds_keys):
     n_cfg = len(config_names)
     axes = {}
     for i, config_name in enumerate(config_names):
         print(config_name, ds_key)
         folder = os.path.join('./tmp/cross_validate/', config_name, eval_task, pred_target, ds_key)
+        folder = os.path.join('./tmp/cross_validate_is_sensitive/', config_name, eval_task, pred_target, ds_key)
         dirs = os.listdir(folder)
         prefices = set([dir[:-7] for dir in dirs])
         cnt = len(dirs) // len(prefices)
@@ -102,14 +96,31 @@ for k, ds_key in enumerate(ds_keys):
             rec = 1 if p == 0 else tp / p
             spec = 1 if n == 0 else tn / n
             bacc = (rec + spec) / 2
-            baccs.append(bacc)
+            baccs.append(round(bacc,3))
 
         pred = np.concatenate(preds)
         targ = pd.concat(targs)
         demo = pd.concat(demos)
-        correct_pred = pred == targ
+        print(type(pred))
+        print(type(targ))
+        print(type(demo))
+
+        pred = pd.Series(pred)
+        correct_pred = pred.values == targ.values
+        correct_pred = pd.Series(correct_pred)
+        print(type(correct_pred))
+
+        pred.replace({True: 1, False: 0},inplace=True)
+        targ.replace({True: 1, False: 0},inplace=True)
         correct_pred.replace({True: 1, False: 0},inplace=True)
-        correct_pred = pd.concat([demo, correct_pred.rename('correct_pred')], axis=1)
+
+        print(pred.index)
+        print(targ.index)
+        print(demo.index)
+        print(correct_pred.index)
+        targ.index = pred.index
+        demo.index = pred.index
+        correct_pred = pd.concat([demo,pred,targ.rename('true_label'),correct_pred.rename('correct_pred')], axis=1)
 
         metrics = {"accuracy": accuracy_score, 
                     "recall": recall_score, 
