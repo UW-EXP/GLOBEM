@@ -1,4 +1,9 @@
-. run_endterm_demo.sh gender_DEMO 1
-. run_endterm_demo.sh orientation_heterosexual_DEMO 0
-. run_endterm_demo.sh student_international_DEMO 0
-. run_endterm_demo.sh student_1st_
+. run_endterm_demo_single.sh gender_DEMO "Male"
+. run_endterm_demo_single.sh race_DEMO "Asian"
+. run_endterm_demo_single.sh race_DEMO "White"
+. run_endterm_demo_single.sh race_DEMO "Biracial"
+. run_endterm_demo_single.sh orientation_heterosexual_DEMO "Non-heterosexual"
+. run_endterm_demo_single.sh student_1stGen_DEMO "First-generation"
+. run_endterm_demo_single.sh parent_edu_mother_DEMO "Below bachelor's degree"
+. run_endterm_demo_single.sh parent_edu_father_DEMO "Below bachelor's degree"
+. run_endterm_demo_single.sh generation_DEMO "Immigrant"
