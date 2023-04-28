@@ -8,6 +8,15 @@ from algorithm.ml_basic import DepressionDetectionAlgorithm_ML_basic
 from algorithm.dl_erm import DepressionDetectionAlgorithm_DL_erm
 import argparse
 
+def add_demographic_feature_to_yaml(config_name, demographic_label):
+    with open(os.path.join(path_definitions.CONFIG_PATH, f"{config_name}.yaml"), "r") as f:
+        config = yaml.safe_load(f)
+    for key in config["feature_definition"]:
+        if key.startswith("feature_list"):
+            config["feature_definition"][key][-1] = demographic_label
+    with open(os.path.join(path_definitions.CONFIG_PATH, f"{config_name}.yaml"), "w") as f:
+        yaml.safe_dump(config, f, default_flow_style=True)
+
 if __name__ == "__main__":
 
     init_global_variables()
@@ -55,7 +64,7 @@ if __name__ == "__main__":
     phase_list = [i.split("_")[1] for i in ds_keys]
 
     pred_targets = [pred_target]
-
+    add_demographic_feature_to_yaml(config_name, args.demographic_label)
     if (config_name.startswith("dl_") or "dl_clustering" in config_name or "dl_reordering" in config_name):
         flag_dl = True
         # Do not need to load the whole dataset pickle file
