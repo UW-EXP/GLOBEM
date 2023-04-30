@@ -114,13 +114,13 @@ for k, ds_key in enumerate(ds_keys):
         targ.replace({True: 1, False: 0},inplace=True)
         correct_pred.replace({True: 1, False: 0},inplace=True)
 
-        print(pred.index)
-        print(targ.index)
-        print(demo.index)
-        print(correct_pred.index)
+        # print(pred.index)
+        # print(targ.index)
+        # print(demo.index)
+        # print(correct_pred.index)
         targ.index = pred.index
         demo.index = pred.index
-        correct_pred = pd.concat([demo,pred,targ.rename('true_label'),correct_pred.rename('correct_pred')], axis=1)
+        correct_pred = pd.concat([demo,pred.rename('pred_label'),targ.rename('true_label'),correct_pred.rename('correct_pred')], axis=1)
 
         metrics = {"accuracy": accuracy_score, 
                     "recall": recall_score, 
@@ -135,7 +135,7 @@ for k, ds_key in enumerate(ds_keys):
         
         folder_output = os.path.join(faireval_folder, config_name, eval_task, pred_target, ds_key)
         mkdir(os.path.join(folder_output))
-        print(folder_output)
+        # print(folder_output)
         for col, mf in fair_evals.items():
             mf.by_group.to_csv(os.path.join(folder_output, '{}_by_group.csv'.format(col)))
         mf.overall.append(pd.Series(np.mean(baccs), index=['bal_acc'])).to_csv(os.path.join(folder_output, 'overall.csv'.format(col)))
