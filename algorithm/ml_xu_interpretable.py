@@ -58,8 +58,8 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
             ]
         demographic_label = self.config["feature_definition"].get("demographic_label", None)
         if demographic_label:
-            self.feature_list.append(demographic_label)
-            self.feature_list_norm.append(demographic_label)
+            self.feature_list.extend([f"{demographic_label}:{epoch}" for epoch in epochs_4])
+            self.feature_list_norm.extend([f"{demographic_label}_norm:{epoch}" for epoch in epochs_4])
         self.NAFILL = - 10<<10
 
         self.model_params = self.config["model_params"]
@@ -436,6 +436,15 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
     def prep_data_repo(self, dataset:DatasetDict, flag_train:bool = True) -> DataRepo:
         set_random_seed(42)
         df_datapoints = deepcopy(dataset.datapoints)
+	
+        demographic_label = self.config["feature_definition"].get("demographic_label", None)
+        def add_demographic_epochs(df):
+            if demographic_label:
+                for epoch in epochs_4:
+                    df[f"{demographic_label}:{epoch}"] = df[demographic_label]
+                    df[f"{demographic_label}_norm:{epoch}"] = df[demographic_label]
+            return df
+        df_datapoints["X_raw"] = df_datapoints["X_raw"].apply(lambda x: add_demographic_epochs(x))
 
         pids_all = df_datapoints["pid"].unique()
         pids_arm = np.random.choice(pids_all, int(0.35 * len(pids_all)), replace = False)
