@@ -56,7 +56,10 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
                 f"{f}_norm:{epoch}" for f in self.feature_list_base \
                     for epoch in epochs_4
             ]
-
+        demographic_label = self.config["feature_definition"].get("demographic_label", None)
+        if demographic_label:
+            self.feature_list.append(demographic_label)
+            self.feature_list_norm.append(demographic_label)
         self.NAFILL = - 10<<10
 
         self.model_params = self.config["model_params"]
