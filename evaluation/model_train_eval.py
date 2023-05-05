@@ -11,9 +11,15 @@ import argparse
 def add_demographic_feature_to_yaml(config_name, demographic_label):
     with open(os.path.join(path_definitions.CONFIG_PATH, f"{config_name}.yaml"), "r") as f:
         config = yaml.safe_load(f)
+    use_direct_feature = False
     for key in config["feature_definition"]:
-        if key.startswith("feature_list"):
+        # as we have alreadly inserrtd a is_sensitive feature to algorithms configuration files,
+        # we only need to replace them
+        if key == "feature_list_more_feat_types" or key == "feature_list":
             config["feature_definition"][key][-1] = demographic_label
+            use_direct_feature = True
+    if not use_direct_feature:
+        config["feature_definition"]["demographic_label"] = demographic_label
     with open(os.path.join(path_definitions.CONFIG_PATH, f"{config_name}.yaml"), "w") as f:
         yaml.safe_dump(config, f, default_flow_style=True)
 
