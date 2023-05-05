@@ -25,7 +25,7 @@
       'f_steps:fitbit_steps_intraday_rapids_maxdurationsedentarybout', 'f_steps:fitbit_steps_intraday_rapids_mindurationsedentarybout',
       'f_steps:fitbit_steps_intraday_rapids_avgdurationsedentarybout', 'f_steps:fitbit_steps_intraday_rapids_countepisodeactivebout',
       'f_steps:fitbit_steps_intraday_rapids_maxdurationactivebout', 'f_steps:fitbit_steps_intraday_rapids_mindurationactivebout',
-      'f_steps:fitbit_steps_intraday_rapids_avgdurationactivebout', is_sensitive],
+      'f_steps:fitbit_steps_intraday_rapids_avgdurationactivebout'],
     feature_list_more_feat_types_base: ['f_loc:phone_locations_doryab_numberofsignificantplaces',
       'f_loc:phone_locations_doryab_numberlocationtransitions', 'f_loc:phone_locations_doryab_radiusgyration',
       'f_loc:phone_locations_doryab_timeattop1location', 'f_loc:phone_locations_doryab_timeattop2location',
@@ -60,6 +60,6 @@
       'f_call:phone_calls_rapids_incoming_count', 'f_call:phone_calls_rapids_incoming_distinctcontacts',
       'f_call:phone_calls_rapids_incoming_sumduration', 'f_call:phone_calls_rapids_missed_count',
       'f_call:phone_calls_rapids_outgoing_count', 'f_call:phone_calls_rapids_outgoing_distinctcontacts',
-      'f_call:phone_calls_rapids_outgoing_sumduration', is_sensitive], include_device_type: false,
+      'f_call:phone_calls_rapids_outgoing_sumduration'], include_device_type: false,
     use_norm_features: false}, name: ml_xu_personalized, training_params: {save_and_reload: false,
     verbose: 0}}
