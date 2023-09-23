@@ -41,7 +41,9 @@ class DepressionDetectionAlgorithm_ML_wahle(DepressionDetectionAlgorithm_ML_basi
         else:
             self.feature_list_direct = [col + ":14dhist" for col in self.feature_list_base]
             self.feature_list_stats = [col + ":allday" for col in self.feature_list_base]
-            
+        demographic_label = self.config["feature_definition"].get("demographic_label", None)
+        if demographic_label:
+            self.feature_list_direct.append(demographic_label)            
 
     def prep_X(self, key:str, pred_target: str, df_datapoints: pd.DataFrame):
         Path(self.results_save_folder).mkdir(parents=True, exist_ok=True)

@@ -24,3 +24,5 @@ tqdm==4.62.3
 typeguard==2.13.3
 wget==3.2
 protobuf==3.20.1
+fairlearn==0.8.0
+# fairlearn==0.7.0

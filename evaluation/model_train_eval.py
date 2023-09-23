@@ -8,7 +8,24 @@ from algorithm.ml_basic import DepressionDetectionAlgorithm_ML_basic
 from algorithm.dl_erm import DepressionDetectionAlgorithm_DL_erm
 import argparse
 
+def add_demographic_feature_to_yaml(config_name, demographic_label):
+    with open(os.path.join(path_definitions.CONFIG_PATH, f"{config_name}.yaml"), "r") as f:
+        config = yaml.safe_load(f)
+    use_direct_feature = False
+    for key in config["feature_definition"]:
+        # as we have alreadly inserrtd a is_sensitive feature to algorithms configuration files,
+        # we only need to replace them
+        if key == "feature_list_more_feat_types" or key == "feature_list":
+            config["feature_definition"][key][-1] = demographic_label
+            use_direct_feature = True
+    if not use_direct_feature:
+        config["feature_definition"]["demographic_label"] = demographic_label
+    with open(os.path.join(path_definitions.CONFIG_PATH, f"{config_name}.yaml"), "w") as f:
+        yaml.safe_dump(config, f, default_flow_style=True)
+
 if __name__ == "__main__":
+
+    init_global_variables()
 
     flag_compute_data = False
     folder = os.path.dirname(os.path.realpath(__file__))
@@ -30,7 +47,10 @@ if __name__ == "__main__":
         "(8) 'all' - do all evaluation setup from (1) to (7).\n Default 'allbutone'.")
     parser.add_argument('--verbose', default=1, type = int,
         help = "Whether to print intermediate pipeline results. 0: minimal output, 1: normal output, 2: detail output")
-
+    parser.add_argument('--demographic_feature', default='gender_DEMO', type=str,
+        help = "Demographic feature. Default 'gender_DEMO'.")
+    parser.add_argument('--demographic_label', default="Male", type=str,
+        help = "Demographic label. Default Male.")
     args = parser.parse_args()
     print(args)
 
@@ -49,7 +69,7 @@ if __name__ == "__main__":
     phase_list = [i.split("_")[1] for i in ds_keys]
 
     pred_targets = [pred_target]
-
+    add_demographic_feature_to_yaml(config_name, args.demographic_label)
     if (config_name.startswith("dl_") or "dl_clustering" in config_name or "dl_reordering" in config_name):
         flag_dl = True
         # Do not need to load the whole dataset pickle file
@@ -69,6 +89,16 @@ if __name__ == "__main__":
 
     # Single Dataset Evaluation
     if ("single" in eval_task or "all" in eval_task):
+        # TODO: unifies global variables
+        from utils.common_settings import GV
+        GV._demographic_feature = args.demographic_feature
+        GV._demographic_label = args.demographic_label
+
+        # GV.folder_1 = os.path.join('./tmp/cross_validate/', config_name, 'single')
+        GV.folder_1 = os.path.join('./tmp/cross_validate_{}_{}/'.format(GV._demographic_feature, GV._demographic_label), config_name, 'single')
+        mkdir(GV.folder_1)
+        print('folder_1: ', GV.folder_1)
+
         if not flag_dl:
             ray.init(num_cpus=NJOB, ignore_reinit_error=True)
         print("|"*10, "start --", config_name, "single ds", "|"*10)

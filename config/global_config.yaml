@@ -2,14 +2,20 @@ name: global
 
 # config for all algorithms
 all:
-  prediction_tasks: ["dep_weekly"] # list of model prediction tasks, should only contains major targets
-  # ds_keys: ["INS-W_1", "INS-W_2", "INS-W_3", "INS-W_4"] # list of datasets to analyze
-  ds_keys: ["INS-W-sample_1", "INS-W-sample_2", "INS-W-sample_3", "INS-W-sample_4"] # list of datasets to analyze
+  # prediction_tasks: ["dep_weekly"] # list of model prediction tasks, should only contains major targets
+  prediction_tasks: ["dep_weekly", 'dep_endterm'] # list of model prediction tasks, should only contains major targets
+  ds_keys: ["INS-W_1", "INS-W_2", "INS-W_3", "INS-W_4"] # list of datasets to analyze
+  # ds_keys: ["INS-W-sample_1", "INS-W-sample_2", "INS-W-sample_3", "INS-W-sample_4"] # list of datasets to analyze
+  # ds_keys: ["INS-W_1"] # list of datasets to analyze
+  # ds_keys: ["INS-W-sample_1"] # list of datasets to analyze
+  # ds_keys: ["INS-W_1", "INS-W_2"] # list of datasets to analyze
+  # ds_keys: ["INS-W_3", "INS-W_4"] # list of datasets to analyze
 
   # Default False. Only True when the dataset in ds_keys all support an extended list of feature types.
   # Currently only support INS-W
   flag_more_feat_types: True
-
+  demographic_feature: "gender_DEMO"
+  demographic_label: 1
 # config for traditional algorithms
 ml:
   training_params:

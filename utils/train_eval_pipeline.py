@@ -11,6 +11,66 @@ from utils.cv_split import judge_corner_cvsplit
 from utils import path_definitions
 from tensorflow.python.data.ops.dataset_ops import FlatMapDataset
 
+from sklearn.utils import indexable
+from sklearn.model_selection import check_cv
+from sklearn.base import is_classifier
+# from sklearn.utils.parallel import Parallel, delayed
+
+def cross_validate_demo(estimator: DepressionDetectionClassifierBase, data_repo: DataRepo, cv, n_jobs, scoring, return_train_score) -> Dict[str, List[float]]:
+    """Perform cross validation with demographic info
+
+    Args:
+        estimator (DepressionDetectionClassifierBase): classififer
+        data_repo (DataRepo): data repo for cross validation
+        cv: cross validation split
+        n_jobs (int): number of jobs
+        scoring (Dict[str, Callable]): scoring functions
+        return_train_score (bool): return train score or not
+
+    Returns:
+        Dict[str, List[float]]: cross validation results
+    """
+    X, y, demographic, groups = data_repo.X, data_repo.y, data_repo.demographic, data_repo.pids
+    X, y, demographic, groups = indexable(X, y, demographic, groups)
+    
+    cv = check_cv(cv, y, classifier=is_classifier(estimator))
+
+    # TODO: Add support for parallelization')
+    print('n_splits: ', cv.get_n_splits())
+    for k, (train, test) in enumerate(cv.split(X, y, groups)):
+        print(f'CV {k + 1}/{cv.get_n_splits()}: train {len(train)}, test {len(test)}')
+        # print('train: ', train)
+        # print('test: ', test)
+        # deepcopy estimator
+        _estimator = deepcopy(estimator)
+        _estimator.fit(X.iloc[train], y.iloc[train])
+
+        test_scores = scoring(_estimator, X.iloc[test], y.iloc[test], demographic.iloc[test])
+        if return_train_score:
+            train_scores = scoring(_estimator, X.iloc[train], y.iloc[train], demographic.iloc[train])
+
+        y_pred = _estimator.predict(X.iloc[test])
+        y_targ = y.iloc[test]
+        demographic_test = demographic.iloc[test]
+        # print(type(demographic))
+        # print(type(demographic_test))
+        # print(type(demographic_test.values[0]))
+        demographic_test = pd.DataFrame([value.values for value in demographic_test.values], columns = demographic_test.iloc[0].index)
+        
+        # TODO: unifies the global variable
+        from utils.common_settings import GV
+        GV.cnt = GV.cnt + 1
+        # print('cnt: ', GV.cnt)
+        np.save(os.path.join(GV.folder_2, 'y_pred_{:03d}.npy'.format(GV.cnt)), y_pred)
+        y_targ.to_csv(os.path.join(GV.folder_2, 'y_targ_{:03d}.csv'.format(GV.cnt)))
+        demographic_test.to_csv(os.path.join(GV.folder_2, 'demographic_test_{:03d}.csv'.format(GV.cnt)))
+    
+    result = {'test_score': test_scores}
+    if return_train_score:
+        result['train_score'] = train_scores
+    
+    return result
+
 def calc_cv_oneloop(clf: DepressionDetectionClassifierBase, data_repo: DataRepo, random_seed_index: int,
     n_splits:int = 20) -> Dict[str, List[float]]:
     """Perform one around of n-fold cross validate
@@ -30,14 +90,28 @@ def calc_cv_oneloop(clf: DepressionDetectionClassifierBase, data_repo: DataRepo,
 
     while True: 
         repeat_time += 1
+        # TODO: for dep_endterm
+        n_splits = 20
         cv = StratifiedGroupKFold(n_splits=min(n_splits, pidnum_min),shuffle=True,random_state=42+random_seed_index+repeat_time*1000)
         if (judge_corner_cvsplit(cv, data_repo)):
             continue
         else:
             break
+    # print(f"in calc_cv_oneloop\n")
+    # if data_repo.demographic is not None:
+    #     print("we have included demographic info in this stage\n")
+    #     print(data_repo.demographic)
+    # else:
+    #     print("failure to do\n")
+    '''
     return cross_validate(clf, X=data_repo.X, y=data_repo.y, groups=data_repo.pids,
                             cv = cv, n_jobs = 1,
                             scoring = utils_ml.results_report_sklearn, return_train_score=True)
+    '''
+    # TODO: add demographic info
+    return cross_validate_demo(clf, data_repo=data_repo, cv = cv, n_jobs = 1,
+                            scoring = utils_ml.results_report_sklearn_demo, return_train_score=True)
+
 @ray.remote
 def calc_cv_oneloop_multithread(clf, data_repo, repeat_num):
     """wrapper function with ray multi-thread computation"""
@@ -63,6 +137,10 @@ def single_dataset_model(dataset: DatasetDict, algorithm: DepressionDetectionAlg
     Returns:
         Tuple[DataRepo, ClassifierMixin, List[Dict[str, float]]]: (DataRepo, classifier, evalaution results)
     """
+    # TODO: unifies the global variable
+    from utils.common_settings import GV
+    GV.cnt = 0
+
     if (verbose>0):
         print("Start data prep...")
     start = time.time()
@@ -77,6 +155,7 @@ def single_dataset_model(dataset: DatasetDict, algorithm: DepressionDetectionAlg
         print("Prep data repo time: ", end1 - start)
         print("Prep model time: ", end2 - end1)
     
+    # TODO: cross validation
     if cv_evaluation:
         if (multi_thread_flag):
             data_repo_id = ray.put(data_repo)
@@ -302,6 +381,13 @@ def single_dataset_driver(dataset_dict:Dict[str, Dict[str, DatasetDict]], pred_t
     clf_repo_ptds = {pred_target:{} for pred_target in pred_targets}
     results_repo_ptds = {pred_target:{} for pred_target in pred_targets}
     for pred_target, ds_key in itertools.product(pred_targets, ds_keys):
+        # TODO: unifies global variables
+        from utils.common_settings import GV
+        # print('folder_1: ', GV.folder_1)
+        GV.folder_2 = os.path.join(GV.folder_1, pred_target, ds_key)
+        mkdir(GV.folder_2)
+        # print('folder_2: ', GV.folder_2)
+
         if (verbose >= 1):
             print("=" * 10, pred_target, ds_key, "=" * 10)
         ds_tmp = deepcopy(dataset_dict[pred_target][ds_key])

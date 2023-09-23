@@ -56,7 +56,10 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
                 f"{f}_norm:{epoch}" for f in self.feature_list_base \
                     for epoch in epochs_4
             ]
-
+        demographic_label = self.config["feature_definition"].get("demographic_label", None)
+        if demographic_label:
+            self.feature_list.extend([f"{demographic_label}:{epoch}" for epoch in epochs_4])
+            self.feature_list_norm.extend([f"{demographic_label}_norm:{epoch}" for epoch in epochs_4])
         self.NAFILL = - 10<<10
 
         self.model_params = self.config["model_params"]
@@ -70,6 +73,9 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
         self.w3 = self.model_params["metric_w3"]
 
         self.SYS_MEM_MAX_GB = int(psutil.virtual_memory().total / (1024.0**3))
+
+        # for debug
+        self.verbose = 1
 
     def set_arm_threshold(self, flag_th_memory_safe:str = "normal"):
         if (flag_th_memory_safe == "normal"):
@@ -219,16 +225,25 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
                     axis = 1).values
             return df_tmp[["pid", "date", "dis_value"]]    
 
+        if (self.verbose > 0):
+            pass
+            # print("ARM for slice:", slice_key)
+            # print("top features:", self.top_feature_dict_dis[slice_key])
+            # print("df_grp:", df_grp)
         # prep int list for arm
         data_arm_int = df_grp["X_raw"].apply(lambda x : prep_arm(x, self.top_feature_dict_dis[slice_key]))
         # drop duplicate person day
         data_arm = list(pd.concat(data_arm_int.values, axis = 0).drop_duplicates(["pid", "date"])["dis_value"].values)
 
+        print('spark.driver.memory', f"{int(self.SYS_MEM_MAX_GB // 3)}G")
+        print('spark.driver.maxResultSize', f"{int(self.SYS_MEM_MAX_GB // 5)}G")
         spark = SparkSession.builder.appName("FPGrowthExample")\
             .config("spark.executor.memory", f"{int(self.SYS_MEM_MAX_GB // 3)}G") \
             .config("spark.driver.memory", f"{int(self.SYS_MEM_MAX_GB // 3)}G") \
             .config('spark.driver.maxResultSize', f"{int(self.SYS_MEM_MAX_GB // 5)}G") \
+            .config('spark.port.maxRetries', 100) \
             .getOrCreate()
+
         df_arm_spark = spark.createDataFrame(
             data=[(idx, arm_int_epoch) for idx, arm_int_epoch in enumerate(data_arm) if len(arm_int_epoch) > 1],
             schema=["id", "items"])
@@ -243,6 +258,13 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
         return df_arm_output[["X","Y","idx","support","confidence","lift"]]
         
     def arm_grp_contrast_slice(self, df_twogrps: pd.DataFrame, slice_key: str):
+        if (self.verbose > 0):
+            pass
+            # print("df_twogrps:", df_twogrps)
+            # print("df_twogrps[\"y_raw\"]:", df_twogrps["y_raw"])
+            # print("df_twogrps[df_twogrps[\"y_raw\"]]:", df_twogrps[df_twogrps["y_raw"]])
+            # print("df_twogrps[~df_twogrps[\"y_raw\"]]:", df_twogrps[~df_twogrps["y_raw"]])
+
         df_grp1 = df_twogrps[df_twogrps["y_raw"]]
         df_grp2 = df_twogrps[~df_twogrps["y_raw"]]
 
@@ -414,6 +436,15 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
     def prep_data_repo(self, dataset:DatasetDict, flag_train:bool = True) -> DataRepo:
         set_random_seed(42)
         df_datapoints = deepcopy(dataset.datapoints)
+	
+        demographic_label = self.config["feature_definition"].get("demographic_label", None)
+        def add_demographic_epochs(df):
+            if demographic_label:
+                for epoch in epochs_4:
+                    df[f"{demographic_label}:{epoch}"] = df[demographic_label]
+                    df[f"{demographic_label}_norm:{epoch}"] = df[demographic_label]
+            return df
+        df_datapoints["X_raw"] = df_datapoints["X_raw"].apply(lambda x: add_demographic_epochs(x))
 
         pids_all = df_datapoints["pid"].unique()
         pids_arm = np.random.choice(pids_all, int(0.35 * len(pids_all)), replace = False)
@@ -520,8 +551,11 @@ class DepressionDetectionAlgorithm_ML_xu_interpretable(DepressionDetectionAlgori
 
         y = df_datapoints_traintest["y_raw"][X.index]
         pids = df_datapoints_traintest["pid"][X.index]
+        # if "demographic" in df_datapoints_traintest and df_datapoints_traintest["demographic"] is not None:
+        #     print("we still have demographic info here\n")
+        demographic = df_datapoints_traintest["demographic"][X.index]
 
-        self.data_repo = DataRepo(X=X, y=y, pids=pids)
+        self.data_repo = DataRepo(X=X, y=y, pids=pids, demographic=demographic)
         return self.data_repo
 
     def get_wks(self, df: pd.DataFrame, wk: str):

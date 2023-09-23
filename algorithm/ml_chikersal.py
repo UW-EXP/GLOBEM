@@ -315,6 +315,8 @@ class DepressionDetectionAlgorithm_ML_chikersal(DepressionDetectionAlgorithm_ML_
                 rlr = RandomizedLogisticRegression(random_state = 42)
                 rlr.fit(X_feat_selected, data_train.y)
                 selected_features_final = list(np.array(selected_features_tmp)[np.where(rlr.scores_ > np.quantile(rlr.scores_, 0.5))[0]])
+                if len(selected_features_final) == 0:
+                    continue
                 selected_features_dict[ft] = selected_features_final
 
         # Each single model Part

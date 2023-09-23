@@ -61,3 +61,18 @@ url_dictionary = {
 threshold_book = {
     "UCLA_10items_POST": {"threshold_as_false": 24, "threshold_as_true":25},
 }
+
+demographic_data_columns = ['gender_DEMO', 'race_DEMO', 'orientation_heterosexual_DEMO', 
+                                'student_international_DEMO', 'student_1stGen_DEMO', 'parent_edu_mother_DEMO', 
+                                'parent_edu_father_DEMO', 'generation_DEMO']
+
+demographic_labels_dict = {
+    "gender_DEMO": {"Male": 1},
+    "race_DEMO": {"Asian": 0, "White": 1, "Biracial": 2},
+    "orientation_heterosexual_DEMO": {"Non-heterosexual": 0},
+    "student_1stGen_DEMO": {"First-generation": 1},
+    "parent_edu_mother_DEMO": {"Below bachelor's degree": 0},
+    "parent_edu_father_DEMO": {"Below bachelor's degree": 0},
+    "generation_DEMO": {"Immigrant": 1},
+}
+race_labels_to_value = {"Asian": 0, "White": 1, 'Biracial': 2, 'Black': 3, 'Latinx': 4}

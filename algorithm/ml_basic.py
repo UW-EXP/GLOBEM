@@ -170,12 +170,13 @@ class DepressionDetectionAlgorithm_ML_basic(DepressionDetectionAlgorithmBase):
         y = df_datapoints["y_raw"].loc[X.index]
         pids = df_datapoints["pid"].loc[X.index]
         device_types = df_datapoints["device_type"].loc[X.index]
+        demographic = df_datapoints["demographic"].loc[X.index]
 
         if (self.config["feature_definition"]["include_device_type"]):
             X["device_type"] = device_types
             X["device_type"] = X["device_type"].apply(lambda x : 1 if x == "ios" else 0)
 
-        self.data_repo = DataRepo(X=X, y=y, pids=pids)
+        self.data_repo = DataRepo(X=X, y=y, pids=pids, demographic=demographic)
         return self.data_repo
 
     def prep_model(self):
