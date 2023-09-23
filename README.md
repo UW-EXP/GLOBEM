@@ -75,7 +75,7 @@ Our platform is tested with Python 3.7 under MacOS 11.6 (intel) and CentOS 7. Tr
 
 ### Environment
 
-GLOBEm is a python-based platform to leverage its flexibility and large number of open libraries. Here is an example of using Anaconda or miniconda for environment setup:
+GLOBEm is a python-based platform to leverage its flexibility and large number of open libraries. Java JDK (>= 11) is needed for `ml_xu_interpretable`, `ml_xu_personalized`, and `ml_chikersal`. Here is an example of using Anaconda or miniconda for environment setup:
 
 ```
 conda create -n globem python=3.7
