@@ -3,6 +3,8 @@ name: global
 # config for all algorithms
 all:
   prediction_tasks: ["dep_weekly"] # list of model prediction tasks, should only contains major targets
+                                   # other examples: ["UCLA_10items_POST", "PSS_10items_POST"]
+  
   # ds_keys: ["INS-W_1", "INS-W_2", "INS-W_3", "INS-W_4"] # list of datasets to analyze
   ds_keys: ["INS-W-sample_1", "INS-W-sample_2", "INS-W-sample_3", "INS-W-sample_4"] # list of datasets to analyze
 
