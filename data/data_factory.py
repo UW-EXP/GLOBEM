@@ -58,6 +58,22 @@ url_dictionary = {
     "data_raw_sample": "https://drive.google.com/uc?export=download&id=1a3cM1joYyPPoYmDCk1U4qM3Q_gjSeJLd"
 }
 
+# Some preliminary thresholds for initial testing are based on the split percentile.
+# Open to change if there is theoretical support
 threshold_book = {
     "UCLA_10items_POST": {"threshold_as_false": 24, "threshold_as_true":25},
+    "negative_affect_EMA": {"threshold_as_false": 5, "threshold_as_true":6},
+    "PSS_10items_POST": {"threshold_as_false": 20, "threshold_as_true":21},
+    "CHIPS_POST":  {"threshold_as_false": 16, "threshold_as_true":17},
+    "SocialFit_POST":  {"threshold_as_false": 76, "threshold_as_true":77},
+    "ERQ_reappraisal_POST": {"threshold_as_false": 4.9, "threshold_as_true":5.0},
+    "ERQ_suppression_POST": {"threshold_as_false": 4.9, "threshold_as_true":5.0},
+    "BRS_POST": {"threshold_as_false": 2.99, "threshold_as_true":3.0},
+    "2waySSS_giving_emotional_POST": {"threshold_as_false": 19.9, "threshold_as_true":20.0},
+    "2waySSS_giving_instrumental_POST": {"threshold_as_false": 16.9, "threshold_as_true":17.0},
+    "2waySSS_receiving_emotional_POST": {"threshold_as_false": 29.9, "threshold_as_true":30.0},
+    "2waySSS_receiving_instrumental_POST": {"threshold_as_false": 16.5, "threshold_as_true":16.6},
+    "phq4_anxiety_EMA": {"threshold_as_false": 2, "threshold_as_true":3},
+    "pss4_EMA": {"threshold_as_false": 7, "threshold_as_true":8},
+    "positive_affect_EMA": {"threshold_as_false": 5, "threshold_as_true":6},
 }
