@@ -508,9 +508,9 @@ def two_datasets_driver(dataset_dict:Dict[str, Dict[str, DatasetDict]], pred_tar
     }
 
     if flag_return_datarepo:
-        two_datasets_dict["data_repo"] = data_repo_train_tmp
+        two_datasets_dict["data_repo"] = data_repo_ptds
     if flag_return_clf:
-        two_datasets_dict["clf_repo"] = clf_train_tmp
+        two_datasets_dict["clf_repo"] = clf_repo_ptds
     return two_datasets_dict
 
 def two_datasets_overlap_driver(dataset_dict:Dict[str, Dict[str, DatasetDict]], pred_targets:List[str],
@@ -578,9 +578,9 @@ def two_datasets_overlap_driver(dataset_dict:Dict[str, Dict[str, DatasetDict]], 
     }
 
     if flag_return_datarepo:
-        two_datasets_overlap_dict["data_repo"] = data_repo_train_tmp
+        two_datasets_overlap_dict["data_repo"] = data_repo_ptds
     if flag_return_clf:
-        two_datasets_overlap_dict["clf_repo"] = clf_train_tmp
+        two_datasets_overlap_dict["clf_repo"] = clf_repo_ptds
     return two_datasets_overlap_dict
 
 def allbutone_datasets_driver(dataset_dict:Dict[str, Dict[str, DatasetDict]], pred_targets:List[str],
@@ -638,9 +638,9 @@ def allbutone_datasets_driver(dataset_dict:Dict[str, Dict[str, DatasetDict]], pr
     }
 
     if flag_return_datarepo:
-        allbutone_datasets_dict["data_repo"] = data_repo_train_tmp
+        allbutone_datasets_dict["data_repo"] = data_repo_ptds
     if flag_return_clf:
-        allbutone_datasets_dict["clf_repo"] = clf_train_tmp
+        allbutone_datasets_dict["clf_repo"] = clf_repo_ptds
     return allbutone_datasets_dict
 
 def crossgroup_datasets_driver(dataset_dict:Dict[str, Dict[str, DatasetDict]], pred_targets:List[str],
@@ -707,9 +707,9 @@ def crossgroup_datasets_driver(dataset_dict:Dict[str, Dict[str, DatasetDict]], p
         "results_repo": results_repo_ptds
     }
     if flag_return_datarepo:
-        crossgroup_datasets_dict["data_repo"] = data_repo_train_tmp
+        crossgroup_datasets_dict["data_repo"] = data_repo_ptds
     if flag_return_clf:
-        crossgroup_datasets_dict["clf_repo"] = clf_train_tmp
+        crossgroup_datasets_dict["clf_repo"] = clf_repo_ptds
     return crossgroup_datasets_dict
 
 def crosscovid_datasets_driver(dataset_dict:Dict[str, Dict[str, DatasetDict]], pred_targets:List[str],
@@ -777,8 +777,8 @@ def crosscovid_datasets_driver(dataset_dict:Dict[str, Dict[str, DatasetDict]], p
         "results_repo": results_repo_ptds
     }
     if flag_return_datarepo:
-        crosscovid_datasets_dict["data_repo"] = data_repo_train_tmp
+        crosscovid_datasets_dict["data_repo"] = data_repo_ptds
     if flag_return_clf:
-        crosscovid_datasets_dict["clf_repo"] = clf_train_tmp
+        crosscovid_datasets_dict["clf_repo"] = clf_repo_ptds
     return crosscovid_datasets_dict
     
