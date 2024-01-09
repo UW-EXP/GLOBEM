@@ -4,7 +4,8 @@
 
 
 > This is the official codebase of the platform paper [GLOBEM: Cross-Dataset Generalization of Longitudinal Human
-Behavior Modeling](https://orsonxu.com/wp-content/uploads/Projects/GLOBEM/GLOBEM_IMWUT22.pdf), accepted by IMWUT 2022 ([Link](https://orsonxu.com/wp-content/uploads/Projects/GLOBEM/GLOBEM_IMWUT22.pdf))
+Behavior Modeling](https://orsonxu.com/wp-content/uploads/Projects/GLOBEM/GLOBEM_IMWUT22.pdf), accepted by IMWUT 2023 ([Link](https://orsonxu.com/wp-content/uploads/Projects/GLOBEM/GLOBEM_IMWUT22.pdf))
+**🏆 Our paper has won the Distinguished Paper Award @ UbiComp 2023!**
 
 # Introduction
 
